@@ -1,6 +1,6 @@
 # Lana KI - oeffentlicher Projektstand
 
-Revision: 4 | Zustand vom: 2026-10-30T05:28:02.697794+00:00
+Revision: 5 | Zustand vom: 2026-10-31T18:22:14.659794+00:00
 
 Diese Datei ist eine **maschinell redigierte** Fassung des internen
 Projektzustands. Alle Kennungen (Tenant-, Konto-, App-, Abonnement-IDs,
@@ -78,6 +78,21 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 - Nachweis: `USER_SPECIFIED` | Stand: 2026-10-30
 - Direkter Nutzerbeleg vom 29.10.: alle Services einschließlich PC und Android koppeln; drei Server müssen nutzbar bleiben, wenn der lokale PC ausgeschaltet ist. PC nicht zur notwendigen Betriebsbrücke machen.
 
+### R-SECRETS-ENV-ONLY
+
+- Nachweis: `USER_SPECIFIED` | Stand: 2026-10-31
+- Passwoerter, Tokens und Zugangsdaten werden ausschliesslich im Ordner env des Projekts gespeichert. Einzige zugelassene Ausnahme ist die Speicherung im Geraet selbst, etwa der Kennwortspeicher der FRITZ!Box fuer deren eigene Dienste. Nirgendwo sonst: nicht in docs, nicht in scripts, nicht in Notizen, nicht in Chats, nicht in Screenshots von Anmeldedialogen. Ein in einem Screenshot sichtbares Kennwort gilt als offengelegt und loest Rotation aus.
+
+### R-NO-VENV
+
+- Nachweis: `USER_SPECIFIED` | Stand: 2026-10-31
+- Virtuelle Python-Umgebungen sind im Projekt verboten. Kein .venv, kein venv, keine __pycache__-Ordner. Abhaengigkeiten werden ueber requirements.txt beschrieben und bei Bedarf ausserhalb des Projekts installiert. Gleiches Prinzip gilt fuer eingecheckte Fremdbestaende: sie gehoeren nicht in skills.
+
+### R-NAMING
+
+- Nachweis: `USER_SPECIFIED` | Stand: 2026-10-31
+- Verbindliche Namensgebung. Benutzerkonto auf jedem Server und Geraet ist carpu; das ist der Betreiber selbst. Geraetenamen sind ausschliesslich carpuncle-pc, carpuncle-vps, carpuncle-cloud, carpuncle-server und carpuncle-pixel. Keine abweichenden Schreibweisen erfinden und keine neuen Geraetenamen einfuehren. Bei Abweichung in einer Quelle gilt diese Liste.
+
 ## Belegte Fakten
 
 ### F-TOOLS
@@ -130,6 +145,11 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 - Nachweis: `LIVE_VERIFIED` | Stand: 2026-10-30
 - Am 30.10. liefert Document Control keine verbundenen Dokumentsitzungen. Sechs benannte Pages sind über Pages lesbar; dies ist ein unabhängiger Zugriffspfad.
 
+### F-SHADOWDRIVE
+
+- Nachweis: `USER_SPECIFIED` | Stand: 2026-10-31
+- ShadowDrive ist als WebDAV-Online-Speicher direkt an der FRITZ!Box des Heimnetzes angebunden, mit aktivem Abgleich zwischen lokalem Speicher und Online-Speicher. Der Zugang laeuft damit nicht ueber das MCP-Gateway. Die Netzwerkfreigabe Online-Speicher ist dieser Weg; dort abgelegte Sicherungen gelangen ueber den Abgleich zu ShadowDrive. Zugangsdaten liegen im Kennwortspeicher der FRITZ!Box, nicht im Projekt.
+
 ## Offene Probleme
 
 ### P-LOGIN
@@ -181,6 +201,21 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 
 - Nachweis: `DOCUMENTED` | Stand: 2026-10-30
 - Chat vom 29.10. berichtet webhook.lana-ki.app ohne DNS-Ziel und ungeklärten n8n-Origin. Kein Neuaufbau oder DNS auf Verdacht; tatsächlichen Dienst/Port und Konto zuerst prüfen.
+
+### P-FREMDBESTAND-SKILLS
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-10-31
+- Der Ordner skills ist von 15 auf 42 Unterordner gewachsen. Mehrere davon sind Arbeitsverzeichnisse statt Skills, mehrere tragen Namen mit Leerzeichen oder Sonderzeichen und werden dadurch von keinem Agenten geladen, und fuenf Namen der Form lana-ki-agent, lana-ki-agent-komplett, lana-ki-agent-npm, lana-ki-hub und lana-ki-main sind mutmassliche Dubletten. Inventar mit Hashvergleich steht aus; keine pauschale Verschiebung.
+
+### P-NODE-MODULES-STAMM
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-10-31
+- Im Projektstamm liegt node_modules mit 8.289 Dateien und rund 340 MB, dazu package.json mit den Abhaengigkeiten des Agent-Client-Protocol-SDK. Das ist ein elfter Hauptordner und verletzt die Zehn-Ordner-Regel. Reproduzierbar aus package-lock.json. Entscheidung offen, wohin die ACP-Arbeit gehoert; nicht eigenmaechtig verschoben, weil ein laufender Bezug moeglich ist.
+
+### P-KONTEN-REGISTER
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-10-31
+- Das Konten-Register weicht vom tatsaechlichen ENV-Bestand ab. ovhcloud.env gilt dort als fehlend, vorhanden ist ovh.env mit vier Schluesseln. Die vorhandenen microsoft.env mit 17 und azure.env mit sieben Schluesseln fehlen im Register. Der Eintrag Google.env ist gross geschrieben, die Datei heisst google.env; auf den Linux-Knoten waeren das zwei verschiedene Dateien. Tatsaechlich fehlen m365-carpu1986.env, m365-root.env und google-admin.env.
 
 ## Geplante Schritte
 
