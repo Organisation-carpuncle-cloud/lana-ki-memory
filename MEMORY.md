@@ -1,6 +1,6 @@
 # Lana KI - oeffentlicher Projektstand
 
-Revision: 5 | Zustand vom: 2026-10-31T18:22:14.659794+00:00
+Revision: 6 | Zustand vom: 2026-10-31T18:51:55.633566+00:00
 
 Diese Datei ist eine **maschinell redigierte** Fassung des internen
 Projektzustands. Alle Kennungen (Tenant-, Konto-, App-, Abonnement-IDs,
@@ -150,6 +150,11 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 - Nachweis: `USER_SPECIFIED` | Stand: 2026-10-31
 - ShadowDrive ist als WebDAV-Online-Speicher direkt an der FRITZ!Box des Heimnetzes angebunden, mit aktivem Abgleich zwischen lokalem Speicher und Online-Speicher. Der Zugang laeuft damit nicht ueber das MCP-Gateway. Die Netzwerkfreigabe Online-Speicher ist dieser Weg; dort abgelegte Sicherungen gelangen ueber den Abgleich zu ShadowDrive. Zugangsdaten liegen im Kennwortspeicher der FRITZ!Box, nicht im Projekt.
 
+### F-AGENT365-PLATTFORMEN
+
+- Nachweis: `DOCUMENTED` | Stand: 2026-10-31
+- Microsoft Agent 365 Connected Platforms unterstuetzt genau sieben Quellplattformen: Amazon Bedrock, Google Vertex AI, Salesforce Agentforce, Databricks Genie, Anthropic Claude Managed Agents, Oracle Generative AI Agents und Snowflake Cortex. Fuer Oracle und Snowflake ist Observability angekuendigt, aber noch nicht verfuegbar. Nicht unterstuetzt sind OpenAI/ChatGPT, xAI/Grok, Cloudflare Workers AI, Hugging Face, Notion und Perplexity. Verbindungen sind read-only und synchronisieren nur manuell.
+
 ## Offene Probleme
 
 ### P-LOGIN
@@ -216,6 +221,11 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 
 - Nachweis: `LIVE_VERIFIED` | Stand: 2026-10-31
 - Das Konten-Register weicht vom tatsaechlichen ENV-Bestand ab. ovhcloud.env gilt dort als fehlend, vorhanden ist ovh.env mit vier Schluesseln. Die vorhandenen microsoft.env mit 17 und azure.env mit sieben Schluesseln fehlen im Register. Der Eintrag Google.env ist gross geschrieben, die Datei heisst google.env; auf den Linux-Knoten waeren das zwei verschiedene Dateien. Tatsaechlich fehlen m365-carpu1986.env, m365-root.env und google-admin.env.
+
+### P-AGENT365-VORAUSSETZUNG
+
+- Nachweis: `DOCUMENTED` | Stand: 2026-10-31
+- Agent-Telemetrie in Agent 365 setzt Microsoft 365 E7 oder G7 beziehungsweise eine Agent-365-Lizenz voraus; mit den uebrigen Enterprise-Plaenen gibt es nur Inventar und Basisgovernance ohne Activity-Daten. Die Observability-Datensammlung laeuft zusaetzlich ueber das Frontier-Preview-Programm. Jede Verbindung verlangt einen schluesselbasierten Zugang, der in Microsoft 365 hinterlegt wird; Workload Identity Federation wird nicht unterstuetzt. Der Telemetrieabruf kann beim Quellanbieter Abfragekosten ausloesen, etwa BigQuery oder S3. Eigener Lizenzstand nicht geprueft.
 
 ## Geplante Schritte
 
@@ -285,6 +295,16 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 
 - Nachweis: `DOCUMENTED` | Stand: 2026-10-30
 - Eingefügter Gemini-Umbau stammt vom früheren Rohbestand: würde aktuelle Globale-Ablage entfernen, Master/Skill überschreiben und Revision/Sperre umgehen. Erster extrahierter PowerShell-Block syntaktisch unvollständig. Nicht auf die bestehende Installation anwenden; cloudseitiger Gemini-Stand nicht unabhängig verifiziert.
+
+### C-TENANT-DRITTER
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-10-31
+- Der Microsoft-365-Connector dieser Claude-Sitzung meldet als angemeldetes Konto einen onmicrosoft-Tenant, der weder als Haupttenant B noch als Zweittenant A im Projektzustand gefuehrt wird und auch nicht die ausdruecklich ausgeschlossene Domain ist. Damit existiert mindestens ein weiterer Tenant oder ein weiteres Konto im Umlauf. Vor jeder Admin-Center-Arbeit klaeren, in welchem Tenant gearbeitet wird; Einstellungen aus unterschiedlichen Tenants nicht vermischen. Keine neue Kontoanlage daraus ableiten.
+
+### C-SECRETS-AGENT365
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-10-31
+- Die Regel R-SECRETS-ENV-ONLY erlaubt Zugangsdaten nur im Ordner env und im Kennwortspeicher eines Geraets fuer dessen eigene Dienste. Eine Agent-365-Plattformverbindung verlangt dagegen, einen Anbieterschluessel in Microsoft 365 zu hinterlegen. Das ist weder env noch ein Geraetespeicher. Vor dem Anlegen einer Verbindung entscheiden, ob Microsoft 365 als zusaetzlicher zugelassener Speicherort gelten soll, und die Regel dann entsprechend ergaenzen statt sie stillschweigend zu brechen.
 
 ## Quellenlage
 
