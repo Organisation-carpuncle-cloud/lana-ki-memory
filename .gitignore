@@ -1,0 +1,24 @@
+# Absicherung: in diesem Repository liegt ausschliesslich Markdown.
+# Alles andere ist ausgeschlossen, damit niemals ENV-Dateien, Schluessel,
+# Logs, Archive oder Zustandsdateien in ein oeffentliches Repo geraten.
+*
+!*.md
+!.gitignore
+!*/
+# Niemals, auch nicht als Markdown getarnt:
+*.env
+*.env.*
+*.key
+*.pem
+*.ppk
+*.dpapi
+*.pfx
+id_*
+known_hosts
+authorized_keys
+*.log
+*.zip
+*.7z
+*.bak
+lana-master-state.json
+lana-redaction-map.json
