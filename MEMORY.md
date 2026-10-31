@@ -98,12 +98,12 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 ### F-ENTRA
 
 - Nachweis: `DOCUMENTED` | Stand: 2026-10-30
-- Berichtet: bestehende Entra-App Lana, Client <ENTRA_APP_CLIENT>, Object <ENTRA_APP_OBJECT> in Tenant B. Key Vault Lana-Key in Lana-RG, Subscription <AZURE_SUBSCRIPTION>; Access-Policy-Modell berichtet.
+- Berichtet: bestehende Entra-App Lana, Client <ENTRA_APP_CLIENT>, Object <ENTRA_APP_OBJECT> in Tenant B. Key Vault <AZURE_KEYVAULT> in <AZURE_RESOURCE_GROUP>, Subscription <AZURE_SUBSCRIPTION>; Access-Policy-Modell berichtet.
 
 ### F-GCP
 
 - Nachweis: `DOCUMENTED` | Stand: 2026-10-30
-- Berichtet: Organisation carpu-lana-org / <GCP_ORG_ID>; Projekt project-772e3636-5d1f-4a9e-a42; Dienstkonto-ID <GCP_SERVICE_ACCOUNT_UID> ist keine OAuth-Webclient-ID.
+- Berichtet: Organisation <GCP_ORG_NAME> / <GCP_ORG_ID>; Projekt <GCP_PROJECT_ID>; Dienstkonto-ID <GCP_SERVICE_ACCOUNT_UID> ist keine OAuth-Webclient-ID.
 
 ### F-WORLDS
 
@@ -123,7 +123,7 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 ### F-REPO-WIF
 
 - Nachweis: `DOCUMENTED` | Stand: 2026-10-30
-- Chat vom 29.10. berichtet vorhandenes Repo Carpuncle-ki-cloud/Lana, vorbereiteten GitHub-OIDC-Workflow und Draft-PR 3. Claude-seitige Regel und End-to-End-Prüfung damals offen. Nicht mit alten gesperrten GitHub-Identitäten gleichsetzen; hier nicht frisch am Repository abgefragt.
+- Chat vom 29.10. berichtet vorhandenes Repo <GITHUB_REPO>, vorbereiteten GitHub-OIDC-Workflow und Draft-PR 3. Claude-seitige Regel und End-to-End-Prüfung damals offen. Nicht mit alten gesperrten GitHub-Identitäten gleichsetzen; hier nicht frisch am Repository abgefragt.
 
 ### F-DOC-CONTROL
 
@@ -234,7 +234,7 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 ### C-GCP-PRIMARY
 
 - Nachweis: `CONFLICT` | Stand: 2026-10-30
-- Neu eingefügter Skill-Erfolgstext nennt gen-lang-client-0558395429 / <GCP_PRIMARY_PROJECT_NUMBER> als primäres Projekt. Bisheriger Kontext nennt project-772e3636-5d1f-4a9e-a42. Rollen/Zweck und Primärentscheidung nicht still zusammenführen.
+- Neu eingefügter Skill-Erfolgstext nennt <GCP_PRIMARY_PROJECT_ID> / <GCP_PRIMARY_PROJECT_NUMBER> als primäres Projekt. Bisheriger Kontext nennt <GCP_PROJECT_ID>. Rollen/Zweck und Primärentscheidung nicht still zusammenführen.
 
 ### C-CF-ACCOUNTS
 
