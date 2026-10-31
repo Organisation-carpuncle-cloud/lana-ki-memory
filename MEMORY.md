@@ -1,6 +1,6 @@
 # Lana KI - oeffentlicher Projektstand
 
-Erzeugt: 2026-10-31 10:31 UTC | Revision: 4 | Zustand vom: 2026-10-30T05:28:02.697794+00:00
+Revision: 4 | Zustand vom: 2026-10-30T05:28:02.697794+00:00
 
 Diese Datei ist eine **maschinell redigierte** Fassung des internen
 Projektzustands. Alle Kennungen (Tenant-, Konto-, App-, Abonnement-IDs,
