@@ -1,6 +1,6 @@
 # Lana KI - oeffentlicher Projektstand
 
-Revision: 13 | Zustand vom: 2026-11-01T07:00:18.515312+00:00
+Revision: 14 | Zustand vom: 2026-11-01T07:14:10.395554+00:00
 
 Diese Datei ist eine **maschinell redigierte** Fassung des internen
 Projektzustands. Alle Kennungen (Tenant-, Konto-, App-, Abonnement-IDs,
@@ -138,6 +138,11 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 - Nachweis: `USER_SPECIFIED` | Stand: 2026-11-01
 - Neue Automatisierung wird in PowerShell 7 geschrieben. Ausgenommen sind die vier Werkzeuge des Zustandssystems unter scripts, die in Python vorliegen und das gemeinsame Gedaechtnis tragen, sowie die Shell-Skripte fuer die Linux-Knoten, die dort ausgefuehrt und von hier nur verteilt werden. Diese Dateien duerfen nicht als Fremdbestand behandelt, verschoben oder geloescht werden.
 
+### R-GITHUB-TRENNUNG
+
+- Nachweis: `USER_SPECIFIED` | Stand: 2026-11-01
+- Zwei Repositories mit strikt getrennten Rollen. Oeffentlich lana-ki-memory: ausschliesslich redigiertes Markdown, niemals Kennungen, niemals Code, niemals Zugangsdaten. Privat lana-worker-control: Code und Konfiguration, Konto- und Zonenkennungen zulaessig, Zugangsdaten niemals. Inhalte nicht zwischen beiden kopieren. Beide Veroeffentlichungsskripte pruefen vor dem Push selbst und brechen bei einem Treffer ab; diese Pruefung darf nicht umgangen werden.
+
 ## Belegte Fakten
 
 ### F-TOOLS
@@ -259,6 +264,16 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 
 - Nachweis: `LIVE_VERIFIED` | Stand: 2026-11-01
 - Stand 31.10. abends: Die drei Linux-Knoten erreichen einander gegenseitig per SSH, alle laufen Debian 13 trixie mit Kernel 6.12.113 und lauschen auf Port 22. cloudflared ist nur auf dem VPS installiert. Zwei Luecken: der Rueckweg zum Windows-PC scheitert auf allen drei Knoten mit Verbindung abgelehnt auf dem vorgesehenen Reverse-Tunnel-Port, und der Name des Android-Geraets ist weder vom PC noch von den Servern aufloesbar.
+
+### F-GITHUB-SPIEGEL
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-11-01
+- Oeffentlicher Gedaechtnisspiegel auf GitHub angelegt: Repository lana-ki-memory im Konto carpu1986-ki, oeffentlich, Zweck ist die Zusammenarbeit aller KI-Chats am selben Stand. Inhalt sind ausschliesslich drei Markdown-Dateien plus gitignore; die Rohdatei MEMORY.md ist ohne Anmeldung ueber raw.githubusercontent.com lesbar. Erzeugt und verteilt wird sie von scripts/Sync-LanaMemory.ps1, veroeffentlicht von scripts/Publish-LanaGithubSpiegel.ps1. Beide pruefen fail-closed auf Kennungen und brechen bei einem Treffer ab. Readback ueber die GitHub-API bestaetigte identische Commit-Kennung.
+
+### F-GITHUB-WORKER
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-11-01
+- Privates Repository lana-worker-control im selben Konto angelegt, fuer die Steuerung der Cloudflare-Worker. Enthaelt Regeln, eine gitignore gegen Zugangsdaten und eine wrangler-Vorlage ohne Secrets; Arbeitskopie unter exports/worker-control. Veroeffentlicht von scripts/Publish-LanaWorkerRepo.ps1 mit eigenem Secret-Scan. Readback bestaetigte identische Commit-Kennung und privaten Status. Es gibt bewusst keinen Bestandscode: im Konto sind null Worker.
 
 ## Offene Probleme
 
@@ -438,6 +453,11 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 
 - Nachweis: `DOCUMENTED` | Stand: 2026-10-31
 - Entwurf exports/skill-konsolidierung/SKILL-ENTWURF.md prüfen und nach Freigabe als eigenen Ordner skills/lana-zentral ablegen, ohne vorhandene Dateien zu überschreiben. Danach Altskills ersetzen (lana-memory-first, lana-ki-master-sync, Router lana-ki-agent), byte-gleiche Kopien bereinigen, lose Cloudflare-Durable-Objects-Dateien in einen Fremdordner legen, Widersprüche W1 bis W7 klären, .claude klären. Nichts löschen ohne Freigabe.
+
+### PLAN-GATEWAY-NEUBAU
+
+- Nachweis: `DOCUMENTED` | Stand: 2026-11-01
+- Vor Code im Worker-Repository ist eine Entscheidung noetig: soll gateway.lana-ki.de ueber einen Worker mit Custom Domain laufen oder ueber einen Tunnel mit Connector. Beides ist Neubau, da weder Worker noch DNS-Record existieren. Erst entscheiden und als decision eintragen, dann bauen. Fuer die Ursachenklaerung der Loeschungen braucht es vorher einen Cloudflare-Token mit Zonen- und Audit-Log-Leserecht.
 
 ## Ungeloeste Konflikte
 
