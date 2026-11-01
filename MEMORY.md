@@ -1,6 +1,6 @@
 # Lana KI - oeffentlicher Projektstand
 
-Revision: 16 | Zustand vom: 2026-11-01T10:15:04.613431+00:00
+Revision: 17 | Zustand vom: 2026-11-01T11:29:00.384187+00:00
 
 Diese Datei ist eine **maschinell redigierte** Fassung des internen
 Projektzustands. Alle Kennungen (Tenant-, Konto-, App-, Abonnement-IDs,
@@ -320,6 +320,26 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 - Nachweis: `DOCUMENTED` | Stand: 2026-11-01
 - Federierte Connectors werden nach Stand 01.11.2026 in Microsoft 365 Copilot Chat, Copilot in Excel und dem Researcher-Agenten unterstuetzt. Word, PowerPoint und Outlook gehoeren nicht dazu. Der Aufruf wird von der Copilot-Orchestrierung entschieden: erfolgreiche Tool-Erkennung garantiert nicht, dass der Endpunkt bei einem Prompt tatsaechlich aufgerufen wird.
 
+### F-GITHUB-KONTO-ART
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-11-01
+- Das GitHub-Konto carpu1986-ki ist am 01.11.2026 ein reines Benutzerkonto ohne jede Organisation. Es besitzt genau zwei Repositorien: lana-ki-memory (oeffentlich) und lana-worker-control (privat).
+
+### F-GITHUB-TOKEN-ART
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-11-01
+- Der Token in env/github.env ist ein Fine-grained PAT (93 Zeichen, Praefix github_pat_). Die API sendet dafuer keinen x-oauth-scopes-Header. Fuer Enterprise-Administration und Enterprise-Code-Security verlangt GitHub ein PAT classic; der vorhandene Token kann diese Endpunkte nicht bedienen. github.env enthaelt genau einen Schluessel.
+
+### F-GITHUB-ENTERPRISE-FEHLT
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-11-01
+- Die Abfrage des Enterprise carpu-ki-cloud-lana liefert HTTP 404. Ein GitHub-Enterprise-Cloud-Abonnement dieses Namens ist unter dem Konto nicht erreichbar. Damit sind Enterprise-SAML, Enterprise-Code-Security und Enterprise-Secret-Scanning-Alerts gegenstandslos, bis ein Enterprise tatsaechlich besteht.
+
+### F-GITHUB-SICHERHEIT-AKTIV
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-11-01
+- Fuer das oeffentliche Repository lana-ki-memory sind Secret Scanning, Push Protection und Dependabot-Sicherheitsupdates bereits aktiv; Alerts sind ueber die API lesbar (HTTP 200). Nicht-Anbieter-Muster sind aus. Fuer das private lana-worker-control liefert der Alerts-Endpunkt HTTP 404 und der Block security_and_analysis fehlt in der Antwort: Secret Scanning in privaten Repositorien ist eine kostenpflichtige Zusatzfunktion.
+
 ## Offene Probleme
 
 ### P-LOGIN
@@ -528,6 +548,11 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 
 - Nachweis: `DOCUMENTED` | Stand: 2026-11-01
 - Microsoft 365 als Oberflaeche, Lana-Gateway als Integrationsschicht, Provider dahinter verborgen. Die Reihenfolge aus dem fremden Vorschlag ist richtig, hat aber keine Phase 0: gateway.lana-ki.de existiert nicht, weder DNS-Eintrag noch Worker. Phase 1 (Bestand) ist mit dem Audit vom 01.11.2026 erledigt und ohne Befund. Reihenfolge daher: erst Gateway bauen (siehe PLAN-GATEWAY-NEUBAU), dann Provider-Adapter read-only, dann Registrierung im Microsoft-365-Adminbereich. Toolnamen am Microsoft-Muster ausrichten (search, fetch, query) statt an frei gewaehlten Praefixen, da Copilot nach diesen Mustern sucht. UNVERIFIED, nichts davon getestet.
+
+### PLAN-GITHUB-ENTERPRISE
+
+- Nachweis: `DOCUMENTED` | Stand: 2026-11-01
+- Der fremde Vorschlag fuer GitHub-Enterprise-SAML und Enterprise-Code-Security setzt ein Enterprise und ein PAT classic voraus; beides fehlt (F-GITHUB-ENTERPRISE-FEHLT, F-GITHUB-TOKEN-ART). Vor allen weiteren Schritten ist zu klaeren, ob ein kostenpflichtiges Enterprise-Cloud-Abonnement ueberhaupt gewollt ist. Ohne Enterprise bleibt sinnvoll: Push Protection im oeffentlichen Repository beibehalten, Nicht-Anbieter-Muster dort einschalten, und beim privaten Repository auf den Secret-Scan der eigenen Veroeffentlichungsskripte setzen statt auf GitHub-Funktionen. SAML wurde bewusst nicht angefasst, da eine Fehlkonfiguration den Kontozugang sperren kann.
 
 ## Ungeloeste Konflikte
 
