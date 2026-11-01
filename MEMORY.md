@@ -1,6 +1,6 @@
 # Lana KI - oeffentlicher Projektstand
 
-Revision: 14 | Zustand vom: 2026-11-01T07:14:10.395554+00:00
+Revision: 15 | Zustand vom: 2026-11-01T08:36:01.556755+00:00
 
 Diese Datei ist eine **maschinell redigierte** Fassung des internen
 Projektzustands. Alle Kennungen (Tenant-, Konto-, App-, Abonnement-IDs,
@@ -275,6 +275,31 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 - Nachweis: `LIVE_VERIFIED` | Stand: 2026-11-01
 - Privates Repository lana-worker-control im selben Konto angelegt, fuer die Steuerung der Cloudflare-Worker. Enthaelt Regeln, eine gitignore gegen Zugangsdaten und eine wrangler-Vorlage ohne Secrets; Arbeitskopie unter exports/worker-control. Veroeffentlicht von scripts/Publish-LanaWorkerRepo.ps1 mit eigenem Secret-Scan. Readback bestaetigte identische Commit-Kennung und privaten Status. Es gibt bewusst keinen Bestandscode: im Konto sind null Worker.
 
+### F-CF-WORKERS-NULL-20261101
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-11-01
+- Cloudflare-Konto enthaelt am 01.11.2026 weiterhin null Worker (workers_list count=0). Der Gateway-Neubau startet bei Null.
+
+### F-CF-BUILDS-GITHUB
+
+- Nachweis: `USER_SPECIFIED` | Stand: 2026-11-01
+- Cloudflare Workers Builds sieht beide GitHub-Repositorien carpu1986-ki/lana-ki-memory und carpu1986-ki/lana-worker-control in der Repo-Auswahl. Die Cloudflare-GitHub-App ist damit fuer das Konto autorisiert; ein Git-Deploy des Gateway-Workers direkt aus lana-worker-control ist moeglich, ohne wrangler lokal einzurichten.
+
+### F-CF-TOKEN-LUECKEN
+
+- Nachweis: `USER_SPECIFIED` | Stand: 2026-11-01
+- Der verwendete Cloudflare-API-Token meldet im Dash vier fehlende Berechtigungen: email_routing_account_rule_read, email_routing_rule_write, artifacts_read, artifacts_write. Fuer die Ursachenklaerung der verschwundenen Worker und DNS-Eintraege fehlen zusaetzlich Zonen-Leserecht und Audit-Log-Leserecht.
+
+### F-CF-ACCESS-POLICIES
+
+- Nachweis: `USER_SPECIFIED` | Stand: 2026-11-01
+- Im Cloudflare-Access-Dialog fuer Worker sind bereits Richtlinien vorbereitet: Allow Lana KI Admin, E-Mail-Domaenen lana-ki.de, carpu.org und lana-ki.app, Cloudflare-Kontomitglieder, Lana Wissen - Thomas private, lana-core-mcp - Production, Cloudflare Workers Preview URLs sowie Make this Worker public als Bypass fuer alle. Der Schutzumfang laesst sich auf Nur Vorschauen oder Gesamter Traffic stellen.
+
+### F-CF-AI-GATEWAY-ROUTING-LEER
+
+- Nachweis: `USER_SPECIFIED` | Stand: 2026-11-01
+- Das Dynamic-Routing-Schema des Cloudflare AI Gateway ist unkonfiguriert: das Element model-start traegt leere Werte fuer provider und model sowie timeout 0 und retries 0. Es findet also keine Modellweiterleitung statt.
+
 ## Offene Probleme
 
 ### P-LOGIN
@@ -407,6 +432,16 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 - Nachweis: `LIVE_VERIFIED` | Stand: 2026-11-01
 - Das Skript Invoke-LanaUniversalConsolidation lief am 31.10. zweimal mit Apply und brach beide Male an einer schreibgeschuetzten Datei ab. Wirksam geworden sind zwei Sicherungen im Audit, das Aufloesen von .agents/skills in den Hauptordner skills und das Anlegen eines ENV-Sammelladers. Nicht mehr erreicht wurden das Verschieben der Nicht-PowerShell-Skripte und das Ueberschreiben der vier Masteransichten. Dieses Skript darf in der vorliegenden Fassung nicht erneut mit Apply laufen: es wuerde das Zustandswerkzeug aus scripts entfernen und die Masteransichten ohne Revision ueberschreiben.
 
+### P-GCHAT-WEBHOOK-401
+
+- Nachweis: `USER_SPECIFIED` | Stand: 2026-11-01
+- Cloudflare-Benachrichtigungsziel vom Typ Chat/Webhook an Google Chat scheitert im Test mit HTTP 401. Cloudflare nennt als moegliche Ursachen falsche URL, falsches oder fehlendes Webhook-Geheimnis oder nicht erreichbares Ziel. Google-Chat-Webhook-URLs tragen key- und token-Parameter in der Abfragezeichenfolge; beim Einfuegen abgeschnittene oder umkodierte Parameter erzeugen genau diesen Statuscode. UNVERIFIED, noch nicht nachgeprueft.
+
+### P-GCHAT-GITHUB-REPOS
+
+- Nachweis: `USER_SPECIFIED` | Stand: 2026-11-01
+- Die GitHub-Integration im Google-Chat-Raum ist als carpu1986-ki angemeldet, hat aber kein Repository verbunden und meldet You must add a repository. Einzutragen sind carpu1986-ki/lana-ki-memory, carpu1986-ki/lana-worker-control. Dieser Schritt ist nur ueber die Oberflaeche moeglich.
+
 ## Geplante Schritte
 
 ### PLAN-IDENTITY
@@ -457,7 +492,7 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 ### PLAN-GATEWAY-NEUBAU
 
 - Nachweis: `DOCUMENTED` | Stand: 2026-11-01
-- Vor Code im Worker-Repository ist eine Entscheidung noetig: soll gateway.lana-ki.de ueber einen Worker mit Custom Domain laufen oder ueber einen Tunnel mit Connector. Beides ist Neubau, da weder Worker noch DNS-Record existieren. Erst entscheiden und als decision eintragen, dann bauen. Fuer die Ursachenklaerung der Loeschungen braucht es vorher einen Cloudflare-Token mit Zonen- und Audit-Log-Leserecht.
+- Gateway-Neubau fuer gateway.lana-ki.de. Stand 01.11.2026: Git-Deploy aus carpu1986-ki/lana-worker-control ueber Workers Builds ist moeglich, da Cloudflare beide Repositorien sieht. Offen bleibt die Grundsatzentscheidung Worker mit Custom Domain gegen Tunnel mit Connector. Fuer einen MCP-Endpunkt gilt zu pruefen: Cloudflare Access vor dem Pfad /mcp wuerde maschinelle Clients aussperren, da diese keine Access-Anmeldung durchlaufen; Authentifizierung dann ueber Bearer-Token im Worker, Access hoechstens fuer Vorschau-URLs. UNVERIFIED, noch nicht getestet.
 
 ## Ungeloeste Konflikte
 
