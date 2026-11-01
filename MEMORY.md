@@ -1,6 +1,6 @@
 # Lana KI - oeffentlicher Projektstand
 
-Revision: 15 | Zustand vom: 2026-11-01T08:36:01.556755+00:00
+Revision: 16 | Zustand vom: 2026-11-01T10:15:04.613431+00:00
 
 Diese Datei ist eine **maschinell redigierte** Fassung des internen
 Projektzustands. Alle Kennungen (Tenant-, Konto-, App-, Abonnement-IDs,
@@ -300,6 +300,26 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 - Nachweis: `USER_SPECIFIED` | Stand: 2026-11-01
 - Das Dynamic-Routing-Schema des Cloudflare AI Gateway ist unkonfiguriert: das Element model-start traegt leere Werte fuer provider und model sowie timeout 0 und retries 0. Es findet also keine Modellweiterleitung statt.
 
+### F-ENV-PROVIDER-VOLLSTAENDIG
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-11-01
+- Read-only-Audit vom 01.11.2026: alle neun erwarteten Provider-env-Dateien liegen vor (microsoft, azure, google, gcp, aws, cloudflare, mcp, oauth, github). Die Annahme aus dem fremden Architekturvorschlag, microsoft.env und azure.env fehlten, ist widerlegt. Der env-Ordner enthaelt insgesamt 60 Dateien.
+
+### F-GATEWAY-DNS-FEHLT
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-11-01
+- DNS-Aufloesung fuer gateway.lana-ki.de schlaegt am 01.11.2026 fehl. Damit sind TLS-Pruefung, MCP-Initialize und OAuth-Metadatenabfrage gegenstandslos. Das ist der erste und einzige Blocker der gesamten M365-Connector-Kette.
+
+### F-M365-CONNECTOR-VORAUSSETZUNGEN
+
+- Nachweis: `DOCUMENTED` | Stand: 2026-11-01
+- Microsoft verlangt fuer einen Custom Federated Connector: erreichbaren MCP-Endpunkt als Base URL, Rolle Globaler Administrator oder KI-Administrator im Microsoft-365-Adminbereich, passende Entra-Rolle bei SSO, Zugang zum Teams Developer Portal fuer die SSO- oder OAuth-Registrierung samt Registrierungs-ID, sowie Entwickler- und Rechtsangaben (Firmenname, Website, Datenschutzerklaerung, Nutzungsbedingungen). Authentifizierung ist laut Doku nicht zwingend, No Auth wird unterstuetzt; Praxisberichte widersprechen dem. Pflicht-Toolnamen nennt die Doku nicht, Beispiele sind search, fetch und query.
+
+### F-M365-CONNECTOR-OBERFLAECHEN
+
+- Nachweis: `DOCUMENTED` | Stand: 2026-11-01
+- Federierte Connectors werden nach Stand 01.11.2026 in Microsoft 365 Copilot Chat, Copilot in Excel und dem Researcher-Agenten unterstuetzt. Word, PowerPoint und Outlook gehoeren nicht dazu. Der Aufruf wird von der Copilot-Orchestrierung entschieden: erfolgreiche Tool-Erkennung garantiert nicht, dass der Endpunkt bei einem Prompt tatsaechlich aufgerufen wird.
+
 ## Offene Probleme
 
 ### P-LOGIN
@@ -442,6 +462,16 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 - Nachweis: `USER_SPECIFIED` | Stand: 2026-11-01
 - Die GitHub-Integration im Google-Chat-Raum ist als carpu1986-ki angemeldet, hat aber kein Repository verbunden und meldet You must add a repository. Einzutragen sind carpu1986-ki/lana-ki-memory, carpu1986-ki/lana-worker-control. Dieser Schritt ist nur ueber die Oberflaeche moeglich.
 
+### P-ENV-MISC-SAMMELSURIUM
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-11-01
+- Die Datei env/misc.env enthaelt 304 Schluessel aus voellig verschiedenen Bereichen: Infrastrukturpfade, Zugangsdaten mehrerer Anbieter, Geraetekennwoerter und persoenliche Verwaltungsnummern ohne Projektbezug. Mehrere Schluessel liegen doppelt zu network.env und combined.env vor, ein Schluesselname traegt eine Kontonummer im Namen. Die Datei ist dadurch weder pruefbar noch gezielt rotierbar. Aufteilen nach Anbieter, persoenliche Angaben aus dem Projekt entfernen.
+
+### P-ENV-DUBLETTEN
+
+- Nachweis: `LIVE_VERIFIED` | Stand: 2026-11-01
+- Doppelte Ablage im env-Ordner, Stand 01.11.2026: shadow.env und shadowdrive.txt tragen dieselben drei Schluessel; FRITZBOX-Zugang steht in network.env und misc.env; combined.env haelt 30 Schluessel, die anderswo gepflegt werden, und ist laut Projektregel keine Laufzeitquelle. In aws.env steht ein Schluessel mit Tippfehler neben seiner korrekten Fassung. Jede Dublette verdoppelt den Rotationsaufwand und erzeugt Abweichungen.
+
 ## Geplante Schritte
 
 ### PLAN-IDENTITY
@@ -493,6 +523,11 @@ in einer Quelle beschrieben | `USER_SPECIFIED` vom Betreiber festgelegt |
 
 - Nachweis: `DOCUMENTED` | Stand: 2026-11-01
 - Gateway-Neubau fuer gateway.lana-ki.de. Stand 01.11.2026: Git-Deploy aus carpu1986-ki/lana-worker-control ueber Workers Builds ist moeglich, da Cloudflare beide Repositorien sieht. Offen bleibt die Grundsatzentscheidung Worker mit Custom Domain gegen Tunnel mit Connector. Fuer einen MCP-Endpunkt gilt zu pruefen: Cloudflare Access vor dem Pfad /mcp wuerde maschinelle Clients aussperren, da diese keine Access-Anmeldung durchlaufen; Authentifizierung dann ueber Bearer-Token im Worker, Access hoechstens fuer Vorschau-URLs. UNVERIFIED, noch nicht getestet.
+
+### PLAN-M365-FEDERATED-CONNECTOR
+
+- Nachweis: `DOCUMENTED` | Stand: 2026-11-01
+- Microsoft 365 als Oberflaeche, Lana-Gateway als Integrationsschicht, Provider dahinter verborgen. Die Reihenfolge aus dem fremden Vorschlag ist richtig, hat aber keine Phase 0: gateway.lana-ki.de existiert nicht, weder DNS-Eintrag noch Worker. Phase 1 (Bestand) ist mit dem Audit vom 01.11.2026 erledigt und ohne Befund. Reihenfolge daher: erst Gateway bauen (siehe PLAN-GATEWAY-NEUBAU), dann Provider-Adapter read-only, dann Registrierung im Microsoft-365-Adminbereich. Toolnamen am Microsoft-Muster ausrichten (search, fetch, query) statt an frei gewaehlten Praefixen, da Copilot nach diesen Mustern sucht. UNVERIFIED, nichts davon getestet.
 
 ## Ungeloeste Konflikte
 
